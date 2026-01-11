@@ -38,11 +38,19 @@ class Logout(Resource):
     def delete(self):
         session['user_id']=None
         return {},204
+    
+class CheckSession(Resource):
+    def get(self):
+        if session.get('user_id'):
+            user=User.query.filter(User.id==session['user_id']).first()
+            return UserSchema().dump(user),200
+        return {},204
 
 api.add_resource(ClearSession, '/clear', endpoint='clear')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login,'/login')
 api.add_resource(Logout,'/logout')
+api.add_resource(CheckSession,'/check_session')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
